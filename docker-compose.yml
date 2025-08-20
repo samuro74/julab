@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  jupyterlab:
+    build: .
+    container_name: jupyterlab_es
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./data:/workspace
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+    restart: unless-stopped   # para que reinicie si se cae
+    tty: true                 # mantiene sesión abierta
+    stdin_open: true          # útil si quieres adjuntarte con docker attach
