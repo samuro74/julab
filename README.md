@@ -1,5 +1,7 @@
 # 🚀 Contenedor Docker con JupyterLab en Español
 
+![alt text](https://github.com/samuro74/julab/blob/main/intro.png?raw=true)
+
 Este proyecto proporciona un contenedor **Docker** preconfigurado con **JupyterLab en español** y un conjunto de librerías de ciencia de datos, machine learning y procesamiento de texto.  
 El entorno incluye soporte para **PySpark** (Java), configuración de contraseña fija y volúmenes persistentes para que no pierdas tu trabajo entre sesiones.
 
