@@ -6,6 +6,9 @@ ENV DEBIAN_FRONTEND=noninteractive \
     LC_ALL=es_CO.UTF-8 \
     PYTHONUNBUFFERED=1
 
+# Actualizar pip
+RUN pip install --upgrade pip
+
 # Instalar dependencias del sistema
 RUN apt-get update && apt-get install -y --no-install-recommends \
     locales \
@@ -24,27 +27,29 @@ WORKDIR /workspace
 
 # Instalar JupyterLab y librerías requeridas
 RUN pip install --no-cache-dir \
+    catboost \
+    findspark \
+    ipykernel \
     jupyterlab \
     jupyterlab-language-pack-es-ES \
-    ipykernel \
-    catboost \
-    numpy \
-    pandas \
-    openpyxl \
     lightgbm \
+	lxml \
     matplotlib \
-    tensorflow-cpu \
-    findspark \
+    nltk \
+    numpy \
+    openpyxl \
     optuna \
+    pandas \
     pdfplumber \
     plotly \
     pycaret \
     pyspark \
-    nltk \
+    scikit-learn \
     scipy \
     seaborn \
-    scikit-learn \
-    statsmodels
+    statsmodels \
+    tensorflow-cpu \
+	xlsxwriter
 
 # Configurar password fijo para Jupyter
 RUN mkdir -p /root/.jupyter && \
