@@ -19,6 +19,7 @@ El entorno incluye soporte para **PySpark** (Java), configuración de contraseñ
   - NLP: `nltk`.
   - Big Data: `pyspark`, `findspark`.
   - Manejo de PDFs: `pdfplumber`.
+  - Manejo de libros de Excel: `xlsxwriter`.
   - Entorno Jupyter: `jupyterlab`, `ipykernel`.
 
 ---
