@@ -36,6 +36,8 @@ RUN pip install --no-cache-dir \
     ipykernel \
     jupyterlab \
     jupyterlab-language-pack-es-ES \
+	jupyterlab-spreadsheet-editor \
+	jupyterlab-spreadsheet \
 	jupytext \
     lightgbm \
     lxml \
