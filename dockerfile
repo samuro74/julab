@@ -9,13 +9,16 @@ ENV DEBIAN_FRONTEND=noninteractive \
 # Actualizar pip
 RUN pip install --upgrade pip
 
-# Instalar dependencias del sistema
+# Instalar dependencias del sistema, incluyendo tesseract-ocr y poppler-utils
 RUN apt-get update && apt-get install -y --no-install-recommends \
     locales \
     openjdk-17-jdk-headless \
     build-essential \
     curl \
     git \
+    tesseract-ocr \
+    tesseract-ocr-spa \
+    poppler-utils \
     && rm -rf /var/lib/apt/lists/*
 
 # Configurar locale en español
@@ -25,15 +28,17 @@ RUN sed -i '/es_CO.UTF-8/s/^# //g' /etc/locale.gen && \
 # Crear directorio de trabajo
 WORKDIR /workspace
 
-# Instalar JupyterLab y librerías requeridas
+# Instalar JupyterLab, librerías requeridas y librerías OCR para Python
 RUN pip install --no-cache-dir \
     catboost \
     findspark \
+	ipyflow \
     ipykernel \
     jupyterlab \
     jupyterlab-language-pack-es-ES \
+	jupytext \
     lightgbm \
-	lxml \
+    lxml \
     matplotlib \
     nltk \
     numpy \
@@ -49,7 +54,9 @@ RUN pip install --no-cache-dir \
     seaborn \
     statsmodels \
     tensorflow-cpu \
-	xlsxwriter
+    xlsxwriter \
+    pytesseract \
+    pdf2image
 
 # Configurar password fijo para Jupyter
 RUN mkdir -p /root/.jupyter && \
