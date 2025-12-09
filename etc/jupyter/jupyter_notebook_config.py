@@ -2,7 +2,7 @@
 # Al eliminar archivos desde la interfaz web de Jupyter, se borran directamente
 # sin pasar por la papelera (trash).
 
-c = get_config()  #noqa
+c = get_config()
 
 # Desactivar el envío de archivos a la papelera al borrarlos
 c.FileContentsManager.delete_to_trash = False

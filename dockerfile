@@ -72,6 +72,7 @@ RUN mkdir -p /root/.jupyter/lab/user-settings/@jupyterlab/translation-extension 
     echo '{ "locale": "es" }' > /root/.jupyter/lab/user-settings/@jupyterlab/translation-extension/plugin.jupyterlab-settings
 
 # Copiar configuración de Jupyter para desactivar papelera de reciclaje
+RUN mkdir -p /etc/jupyter
 COPY etc/jupyter/jupyter_notebook_config.py /etc/jupyter/jupyter_notebook_config.py
 
 # Exponer puerto de Jupyter
