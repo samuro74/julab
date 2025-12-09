@@ -9,7 +9,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 # Actualizar pip
 RUN pip install --upgrade pip
 
-# Instalar dependencias del sistema, incluyendo tesseract-ocr y poppler-utils
+# Instalar dependencias del sistema
 RUN apt-get update && apt-get install -y --no-install-recommends \
     locales \
     openjdk-17-jdk-headless \
@@ -21,24 +21,23 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     poppler-utils \
     && rm -rf /var/lib/apt/lists/*
 
-# Configurar locale en español
+# Configurar locale español
 RUN sed -i '/es_CO.UTF-8/s/^# //g' /etc/locale.gen && \
     locale-gen
 
-# Crear directorio de trabajo
+# Directorio de trabajo
 WORKDIR /workspace
 
-# Instalar JupyterLab, librerías requeridas y librerías OCR para Python
+# Instalar librerías (ipyflow removido)
 RUN pip install --no-cache-dir \
     catboost \
     findspark \
-	ipyflow \
     ipykernel \
     jupyterlab \
     jupyterlab-language-pack-es-ES \
-	jupyterlab-spreadsheet-editor \
-	jupyterlab-spreadsheet \
-	jupytext \
+    jupyterlab-spreadsheet-editor \
+    jupyterlab-spreadsheet \
+    jupytext \
     lightgbm \
     lxml \
     matplotlib \
@@ -60,17 +59,35 @@ RUN pip install --no-cache-dir \
     pytesseract \
     pdf2image
 
-# Configurar password fijo para Jupyter
+# Configurar password usando nuevo estándar de Jupyter Server 2.x
 RUN mkdir -p /root/.jupyter && \
-    python3 -c "from jupyter_server.auth import passwd; \
-    open('/root/.jupyter/jupyter_server_config.json','w').write('{\"ServerApp\": {\"password\": \"' + passwd(\"admin123\") + '\"}}')"
+    python3 - <<EOF
+from jupyter_server.auth import passwd
+import json
 
-# Configurar JupyterLab en español por defecto (persistente)
-RUN mkdir -p /root/.jupyter/lab/user-settings/@jupyterlab/translation-extension && \
-    echo '{ "locale": "es" }' > /root/.jupyter/lab/user-settings/@jupyterlab/translation-extension/plugin.jupyterlab-settings
+hashed = passwd("admin123")  # Contraseña
+config = {
+    "IdentityProvider": {
+        "hashed_password": hashed
+    }
+}
 
-# Exponer puerto de Jupyter
+with open("/root/.jupyter/jupyter_server_config.json", "w") as f:
+    json.dump(config, f, indent=2)
+EOF
+
+# Configurar idioma español (JupyterLab 4.x usa apputils-extension)
+RUN mkdir -p /root/.jupyter/lab/user-settings/@jupyterlab/apputils-extension && \
+    echo '{ "locale": "es" }' > \
+    /root/.jupyter/lab/user-settings/@jupyterlab/apputils-extension/themes.json
+
+# Desactivar papelera (delete directo) — JupyterLab 4.x usa filebrowser-extension
+RUN mkdir -p /root/.jupyter/lab/user-settings/@jupyterlab/filebrowser-extension && \
+    echo '{ "useTrash": false }' > \
+    /root/.jupyter/lab/user-settings/@jupyterlab/filebrowser-extension/browser.json
+
+# Exponer puerto
 EXPOSE 8888
 
-# Comando por defecto: ejecutar JupyterLab en español
-CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root", "--ServerApp.i18n_language=es"]
+# Comando para ejecutar JupyterLab sin parámetros obsoletos
+CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root", "--ContentsManager.delete_to_trash=False"]
