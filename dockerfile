@@ -2,8 +2,9 @@ FROM python:3.10-slim-bookworm
 
 # Variables de entorno
 ENV DEBIAN_FRONTEND=noninteractive \
-    LANG=es_CO.UTF-8 \
-    LC_ALL=es_CO.UTF-8 \
+    LANG=es_ES.UTF-8 \
+    LANGUAGE=es_ES.UTF-8 \
+    LC_ALL=es_ES.UTF-8 \
     PYTHONUNBUFFERED=1
 
 # Actualizar pip
@@ -21,9 +22,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     poppler-utils \
     && rm -rf /var/lib/apt/lists/*
 
-# Configurar locale en español
-RUN sed -i '/es_CO.UTF-8/s/^# //g' /etc/locale.gen && \
-    locale-gen
+# Configurar locale en español (España)
+RUN sed -i '/es_ES.UTF-8/s/^# //g' /etc/locale.gen && \
+    locale-gen es_ES.UTF-8 && \
+    update-locale LANG=es_ES.UTF-8
 
 # Crear directorio de trabajo
 WORKDIR /workspace
@@ -68,6 +70,9 @@ RUN mkdir -p /root/.jupyter && \
 # Configurar JupyterLab en español por defecto (persistente)
 RUN mkdir -p /root/.jupyter/lab/user-settings/@jupyterlab/translation-extension && \
     echo '{ "locale": "es" }' > /root/.jupyter/lab/user-settings/@jupyterlab/translation-extension/plugin.jupyterlab-settings
+
+# Copiar configuración de Jupyter para desactivar papelera de reciclaje
+COPY etc/jupyter/jupyter_notebook_config.py /etc/jupyter/jupyter_notebook_config.py
 
 # Exponer puerto de Jupyter
 EXPOSE 8888
