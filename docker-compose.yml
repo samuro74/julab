@@ -7,7 +7,7 @@ services:
     ports:
       - "8888:8888"
     volumes:
-      - ./workspace:/workspace
+      - ./data:/workspace
       - jupyter_config:/root/.jupyter
     environment:
       TZ: America/Bogota
